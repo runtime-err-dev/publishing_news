@@ -96,7 +96,7 @@ def add_one_month(dt):
 
 def generate_pay_markup(sub_id):
     markup = types.InlineKeyboardMarkup()
-    markup.add(types.InlineKeyboardButton("✅ Я оплатил", callback_data=f"paid_{sub_id}"))
+    markup.add(types.InlineKeyboardButton("✅ Я оплатил", callback_data=f"paid_{sub_id}", style="success"))
     return markup
 
 def check_cancel(message):
@@ -215,11 +215,11 @@ def client_paid_callback(call):
 
     admin_markup = types.InlineKeyboardMarkup(row_width=2)
     admin_markup.add(
-        types.InlineKeyboardButton("✅ Получена", callback_data=f"conf_{sub_id}"),
-        types.InlineKeyboardButton("❌ Нет", callback_data=f"rej_{sub_id}")
+        types.InlineKeyboardButton("✅ Получена", callback_data=f"conf_{sub_id}", style="success"),
+        types.InlineKeyboardButton("❌ Нет", callback_data=f"rej_{sub_id}", style="danger")
     )
     admin_markup.add(
-        types.InlineKeyboardButton("🔄 Уже зачтена ранее", callback_data=f"ignore_{sub_id}")
+        types.InlineKeyboardButton("🔄 Уже зачтена ранее", callback_data=f"ignore_{sub_id}", style="primary")
     )
     admin_text = f"💰 **ПРОВЕРКА ОПЛАТЫ**\nПользователь: {sub['identifier']} ({sub['nickname']})\nПодписка: {sub['extra_info']}\nСумма: {sub['amount']} руб."
     
@@ -234,17 +234,17 @@ def client_paid_callback(call):
 def admin_panel(message):
     markup = types.InlineKeyboardMarkup(row_width=2)
     markup.add(
-        types.InlineKeyboardButton("➕ Добавить", callback_data="admin_add_client"),
-        types.InlineKeyboardButton("👥 Активные", callback_data="admin_list_clients"),
-        types.InlineKeyboardButton("✏️ Изменить", callback_data="admin_edit_client"),
-        types.InlineKeyboardButton("🚫 Отключить", callback_data="admin_disable_sub")
+        types.InlineKeyboardButton("➕ Добавить", callback_data="admin_add_client", style="success"),
+        types.InlineKeyboardButton("👥 Активные", callback_data="admin_list_clients", style="success"),
+        types.InlineKeyboardButton("✏️ Изменить", callback_data="admin_edit_client", style="danger"),
+        types.InlineKeyboardButton("🚫 Отключить", callback_data="admin_disable_sub", style="danger")
     )
     markup.add(
-        types.InlineKeyboardButton("👮 Админы", callback_data="admin_add_admin"),
-        types.InlineKeyboardButton("⚙️ Настройки", callback_data="admin_settings")
+        types.InlineKeyboardButton("👮 Админы", callback_data="admin_add_admin", style="primary"),
+        types.InlineKeyboardButton("⚙️ Настройки", callback_data="admin_settings", style="primary")
     )
     markup.add(
-        types.InlineKeyboardButton("📢 Написать всем (Рассылка)", callback_data="admin_broadcast")
+        types.InlineKeyboardButton("📢 Написать всем (Рассылка)", callback_data="admin_broadcast", style="primary")
     )
     bot.send_message(message.chat.id, "Панель администратора:", reply_markup=markup)
 
@@ -361,8 +361,8 @@ def admin_callbacks(call):
         evening = conn.execute("SELECT value FROM settings WHERE key='evening_time'").fetchone()['value']
         markup = types.InlineKeyboardMarkup()
         markup.add(
-            types.InlineKeyboardButton("Изменить утреннее", callback_data="set_time_morning"),
-            types.InlineKeyboardButton("Изменить вечернее", callback_data="set_time_evening")
+            types.InlineKeyboardButton("Изменить утреннее", callback_data="set_time_morning", style="primary"),
+            types.InlineKeyboardButton("Изменить вечернее", callback_data="set_time_evening", style="primary")
         )
         bot.send_message(call.message.chat.id, f"⚙️ Текущее время рассылки:\nУтро: {morning}\nВечер: {evening}", reply_markup=markup)
         
@@ -392,11 +392,11 @@ def process_edit_sub_id(message):
             
         markup = types.InlineKeyboardMarkup(row_width=2)
         markup.add(
-            types.InlineKeyboardButton("Идентификатор", callback_data=f"editsub_ident_{sub_id}"),
-            types.InlineKeyboardButton("Имя/Прозвище", callback_data=f"editsub_nick_{sub_id}"),
-            types.InlineKeyboardButton("Доп. инфо", callback_data=f"editsub_info_{sub_id}"),
-            types.InlineKeyboardButton("Сумма", callback_data=f"editsub_amount_{sub_id}"),
-            types.InlineKeyboardButton("Дата оплаты", callback_data=f"editsub_date_{sub_id}")
+            types.InlineKeyboardButton("Идентификатор", callback_data=f"editsub_ident_{sub_id}", style="success"),
+            types.InlineKeyboardButton("Имя/Прозвище", callback_data=f"editsub_nick_{sub_id}", style="success"),
+            types.InlineKeyboardButton("Доп. инфо", callback_data=f"editsub_info_{sub_id}", style="success"),
+            types.InlineKeyboardButton("Сумма", callback_data=f"editsub_amount_{sub_id}", style="success"),
+            types.InlineKeyboardButton("Дата оплаты", callback_data=f"editsub_date_{sub_id}", style="primary")
         )
         
         safe_identifier = html.escape(str(sub['identifier']))
@@ -593,11 +593,11 @@ def check_forgotten_admin_confirmations():
         if current_time - sub['last_admin_reminder'] >= 3500:
             admin_markup = types.InlineKeyboardMarkup(row_width=2)
             admin_markup.add(
-                types.InlineKeyboardButton("✅ Получена", callback_data=f"conf_{sub['id']}"),
-                types.InlineKeyboardButton("❌ Нет", callback_data=f"rej_{sub['id']}")
+                types.InlineKeyboardButton("✅ Получена", callback_data=f"conf_{sub['id']}", style="success"),
+                types.InlineKeyboardButton("❌ Нет", callback_data=f"rej_{sub['id']}", style="danger")
             )
             admin_markup.add(
-                types.InlineKeyboardButton("🔄 Уже зачтена ранее", callback_data=f"ignore_{sub['id']}")
+                types.InlineKeyboardButton("🔄 Уже зачтена ранее", callback_data=f"ignore_{sub['id']}", style="primary")
             )
             admin_text = f"⚠️ **ПОВТОРНОЕ НАПОМИНАНИЕ** ⚠️\n\nОжидает проверки оплаты!\nПользователь: {sub['identifier']} ({sub['nickname']})\nПодписка: {sub['extra_info']}\nСумма: {sub['amount']} руб."
             
